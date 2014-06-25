@@ -63,4 +63,15 @@ describe Admin::CategoriesController do
     assert_raise(ActiveRecord::RecordNotFound) { Category.find(test_id) }
   end
   
+  it "get new from admin" do
+    Admin::CategoriesController.should_receive(:new)
+    #get '/admin/categories/new'
+    #get '/index'
+    get :new
+  end
+  it "should not have param[:id]" do
+    assigns(controller.params[:id]).should_not be_nil
+    get :new
+  end
+  
 end
