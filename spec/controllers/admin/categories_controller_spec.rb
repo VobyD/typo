@@ -64,13 +64,17 @@ describe Admin::CategoriesController do
   end
   
   it "get new from admin" do
-    Admin::CategoriesController.should_receive(:new)
+    #controller.should_receive(:new)
     #get '/admin/categories/new'
     #get '/index'
     get :new
+    assert_template :new
+    assigns(:category).should be_nil
+    #subject { @category }
+    #it { should be_nil }
   end
   it "should not have param[:id]" do
-    assigns(controller.params[:id]).should_not be_nil
+    controller.params[:id].should be_nil
     get :new
   end
   
