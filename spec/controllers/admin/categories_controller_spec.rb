@@ -69,9 +69,15 @@ describe Admin::CategoriesController do
     #get '/index'
     get :new
     assert_template :new
-    assigns(:category).should be_nil
+    assigns(:category).id.should be_nil
     #subject { @category }
     #it { should be_nil }
+  end
+  it "update categories from admin" do
+    our_id=Factory(:category).id
+    post :edit, :id=>our_id
+    assert_response :redirect, :action => 'index'
+    assigns(:category).id.should == our_id
   end
   it "should not have param[:id]" do
     controller.params[:id].should be_nil
