@@ -32,9 +32,11 @@ class Admin::ContentController < Admin::BaseController
     unless ( (@article.access_by? current_user) && @current_user.admin?)
       redirect_to :action => 'index'
       flash[:error] = _("Error, you are not allowed to perform this action")
+      flash[:notice] = 'You are not allowed to do this!'
       return
     end
-    @article.merge(params[:merge_with])
+    flash[:notice]='Articles successfully merged!' if @article.merge(params[:merge_with])
+    
     redirect_to "/admin/content/edit/#{params[:id]}"
 #    new_or_edit
   end

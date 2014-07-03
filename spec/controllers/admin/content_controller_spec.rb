@@ -12,22 +12,22 @@ describe Admin::ContentController do
       @user = Factory(:user, :text_filter => Factory(:markdown), :profile => Factory(:profile_admin, :label => Profile::ADMIN))
       @user.editor = 'simple'
       @user.save
-      @article = Factory(:article)
+      @article = [Factory(:article),Factory(:article),Factory(:article),Factory(:article),Factory(:article),Factory(:article)]
       request.session = { :user => @user.id }
     end
-    it 'should return code 200(success)' do
-      get 'admin/content/merge/3', :merge_with => 2
-      expect(response.status).to eq(200)
+    it 'should return code 302(redirect)' do
+      post :merge,:id =>@article[0].id, :merge_with => @article[1].id
+      expect(response.status).to eq(302)
     end
     it 'should merge 2 articles' do
-      get 'admin/content/merge/3', :merge_with => 2
-      Article.should_recieve(:merge).with(2)
-      assigns(:flash).notice.should_be 'Articles successfully merged!'
-      response.should render_template('admin/content/edit')
+      Article.should_receive(:merge).with(2)
+      post :merge,:id =>@article[2].id, :merge_with => @article[3].id
+      flash[:notice].should == 'Articles successfully merged!'
+      #response.should render_template('admin/content/edit')
     end
     it 'should return error if article not exist' do
-      get 'admin/content/merge/3', :merge_with => 2
-      assigns(:flash).notice.should_be 'No such Article!'
+      post :merge,:id =>@article[4].id, :merge_with => @article[5].id
+      flash[:notice].should == 'No such Article!'
       response.should render_template('admin/content/edit')
     end
   end
@@ -40,17 +40,17 @@ describe Admin::ContentController do
       @user = Factory(:user, :text_filter => Factory(:markdown), :profile => Factory(:profile_publisher))
       @user.editor = 'simple'
       @user.save
-      @article = Factory(:article)
+      @article = [Factory(:article),Factory(:article),Factory(:article),Factory(:article),Factory(:article),Factory(:article)]
       request.session = { :user => @user.id }
     end
-    it 'should return code 200(success)' do
-      get 'admin/content/merge/3', :merge_with => 2
-      expect(response.status).to eq(200)
+    it 'should return code 302(success)' do
+      post :merge,:id =>@article[0].id, :merge_with => @article[1].id
+      expect(response.status).to eq(302)
     end
     it 'should not allow to non admin merge two articles' do
-      get 'admin/content/merge/3', :merge_with => 2
-      Article.should_recieve(:merge).with(2)
-      assigns(:flash).notice.should_be 'You are not allowed to do this!'
+      Article.should_receive(:merge).with(2)
+      post :merge,:id =>@article[2].id, :merge_with => @article[3].id
+      flash[:notice].should == 'You are not allowed to do this!'
       response.should render_template('index')
     end
   end
