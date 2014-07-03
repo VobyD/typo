@@ -8,5 +8,5 @@
 <%= form_tag("/admin/content/merge/#{@article.id}", :id => "s_merge_with", :enctype => "multipart/form-data", :class => className) do %>
   <%= label_tag 'merge_with','Merge Articles' %>
   <%= text_field_tag 'merge_with' %>
-  <%= submit_tag 'Merge' if current_user.login == 'admin' %>
+  <%= submit_tag 'Merge' if current_user.admin? %>
 <% end %>
