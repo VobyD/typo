@@ -27,6 +27,18 @@ class Admin::ContentController < Admin::BaseController
     new_or_edit
   end
 
+  def merge
+    @article = Article.find(params[:id])
+    unless @article.access_by? current_user
+      redirect_to :action => 'index'
+      flash[:error] = _("Error, you are not allowed to perform this action")
+      return
+    end
+    @article.merge(params[:merge_with])
+    redirect_to "/admin/content/edit/#{params[:id]}"
+#    new_or_edit
+  end
+
   def edit
     @article = Article.find(params[:id])
     unless @article.access_by? current_user

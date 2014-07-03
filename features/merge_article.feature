@@ -22,16 +22,13 @@ Feature: Merge Articles
     And I am on the edit 1 article page
     When I fill in "merge_with" with "2"
     And I press "Merge"
-    Then I should be on the admin content page
-    When I go to the home page
-    Then I should see "First Article"
-    When I follow "First Article"
-    Then I should see "First Article Content"
+    Then I should be on the edit 1 article page
+    And I should see "First Article Content"
     And I should see "Second Article Content"
 
 
 
   Scenario: Fail to merge articles by not admin user
     Given I am on the edit 1 article page
-    Then I should be on the index page
+    Then I should be on login page
     And I should see "you are not allowed to perform this action"

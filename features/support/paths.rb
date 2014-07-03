@@ -25,6 +25,10 @@ module NavigationHelpers
     #     user_profile_path(User.find_by_login($1))
     when /^the admin page$/
       '/admin'
+    when /^the edit ([0-9]+) article page/
+      "/admin/content/edit/#{$1}"
+    when /^login page/
+      "/account/login"
     else
       begin
         page_name =~ /^the (.*) page$/

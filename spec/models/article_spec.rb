@@ -26,13 +26,18 @@ describe Article do
     assert_equal [:body, :extended], a.content_fields
   end
 
+
+  #When articles are merged, the merged article should contain the text of both previous articles.
+  #When articles are merged, the merged article should have one author (either one of the authors of the original article).  
+  #Comments on each of the two original articles need to all carry over and point to the new, merged article.
+  #The title of the new article should be the title from either one of the merged articles.
   describe "Merging with another article" do
     before(:each) do
       @our_articles=[Factory(:article,:title=>"First Article",:body=>"Body of First Article"),
       	             Factory(:article,:title=>"Second Article",:body=>"Body of Second Article")]
     end
     
-    it "should merge 2 articles in one" do
+    it "should merge 2 articles in one, containing text of both articles" do
       bodyAfter=@our_articles[0].body + @our_articles[1].body
       @our_articles[0].merge(@our_articles[1].id)
       @our_articles[0].body.should == bodyAfter
@@ -44,6 +49,12 @@ describe Article do
     
     it "should return nil if article not exists" do
       @our_articles[0].merge(9999999999).should_be nil
+    end
+    
+    it "should have one author" do
+      author=@our_articles[0].author
+      @our_articles[0].merge(@our_articles[1].id)
+      author.should == @our_articles[0].author
     end
     
   end
