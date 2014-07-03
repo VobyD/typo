@@ -26,6 +26,28 @@ describe Article do
     assert_equal [:body, :extended], a.content_fields
   end
 
+  describe "Merging with another article" do
+    before(:each) do
+      @our_articles=[Factory(:article,:title=>"First Article",:body=>"Body of First Article"),
+      	             Factory(:article,:title=>"Second Article",:body=>"Body of Second Article")]
+    end
+    
+    it "should merge 2 articles in one" do
+      bodyAfter=@our_articles[0].body + @our_articles[1].body
+      @our_articles[0].merge(@our_articles[1].id)
+      @our_articles[0].body.should == bodyAfter
+    end
+    
+    it "should return id of new article(itself) if succeed" do
+      @our_articles[0].merge(@our_articles[1].id).should == @our_articles[0].id
+    end
+    
+    it "should return nil if article not exists" do
+      @our_articles[0].merge(9999999999).should_be nil
+    end
+    
+  end
+
   describe "#permalink_url" do
     describe "with hostname" do
       subject { Article.new(:permalink => 'article-3', :published_at => Time.new(2004, 6, 1)).permalink_url(anchor=nil, only_path=false) }

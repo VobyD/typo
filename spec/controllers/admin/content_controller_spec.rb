@@ -3,6 +3,58 @@
 describe Admin::ContentController do
   render_views
 
+
+  describe 'merge actions as admin' do
+    before(:each) do
+      Factory(:blog)
+      #TODO delete this after remove fixture
+      Profile.delete_all
+      @user = Factory(:user, :text_filter => Factory(:markdown), :profile => Factory(:profile_admin, :label => Profile::ADMIN))
+      @user.editor = 'simple'
+      @user.save
+      @article = Factory(:article)
+      request.session = { :user => @user.id }
+    end
+    it 'should return code 200(success)' do
+      get 'admin/content/merge/3', :merge_with => 2
+      expect(response.status).to eq(200)
+    end
+    it 'should merge 2 articles' do
+      get 'admin/content/merge/3', :merge_with => 2
+      Article.should_recieve(:merge).with(2)
+      assigns(:flash).notice.should_be 'Articles successfully merged!'
+      response.should render_template('admin/content/edit')
+    end
+    it 'should return error if article not exist' do
+      get 'admin/content/merge/3', :merge_with => 2
+      assigns(:flash).notice.should_be 'No such Article!'
+      response.should render_template('admin/content/edit')
+    end
+  end
+  
+  describe 'merge actions as no admin user' do
+    before(:each) do
+      Factory(:blog)
+      #TODO delete this after remove fixture
+      Profile.delete_all
+      @user = Factory(:user, :text_filter => Factory(:markdown), :profile => Factory(:profile_publisher))
+      @user.editor = 'simple'
+      @user.save
+      @article = Factory(:article)
+      request.session = { :user => @user.id }
+    end
+    it 'should return code 200(success)' do
+      get 'admin/content/merge/3', :merge_with => 2
+      expect(response.status).to eq(200)
+    end
+    it 'should not allow to non admin merge two articles' do
+      get 'admin/content/merge/3', :merge_with => 2
+      Article.should_recieve(:merge).with(2)
+      assigns(:flash).notice.should_be 'You are not allowed to do this!'
+      response.should render_template('index')
+    end
+  end
+
   # Like it's a shared, need call everywhere
   shared_examples_for 'index action' do
 
