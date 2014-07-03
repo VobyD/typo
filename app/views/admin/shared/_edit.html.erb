@@ -5,8 +5,8 @@
 
 <% end %>
 
-<%= form_tag("/admin/content/merge/#{@article.id}", :id => "merge_with", :enctype => "multipart/form-data", :class => className) do %>
-  <h4> Merge With </h4>
+<%= form_tag("/admin/content/merge/#{@article.id}", :id => "s_merge_with", :enctype => "multipart/form-data", :class => className) do %>
+  <%= label_tag 'merge_with','Merge with' %>
   <%= text_field_tag 'merge_with' %>
   <%= submit_tag 'Merge' %>
 <% end %>
